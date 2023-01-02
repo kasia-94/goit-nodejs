@@ -4,37 +4,61 @@ const { nanoid } = require("nanoid");
 const contactsPath = path.resolve(__dirname, "./db/contacts.json");
 
 async function readContacts() {
-  const contactRaw = await fs.readFile(contactsPath);
-  const contactDb = JSON.parse(contactRaw);
-  return contactDb;
+  try {
+    const contactRaw = await fs.readFile(contactsPath);
+    const contactDb = JSON.parse(contactRaw);
+    return contactDb;
+  } catch (error) {
+    console.warn(`Error: ${error}`);
+  }
 }
 
 async function writeContact(db) {
-  await fs.writeFile(contactsPath, JSON.stringify(db, null, 2));
+  try {
+    await fs.writeFile(contactsPath, JSON.stringify(db, null, 2));
+  } catch (error) {
+    console.warn(`Error: ${error}`);
+  }
 }
 
 async function listContacts() {
-  return await readContacts();
+  try {
+    return await readContacts();
+  } catch (error) {
+    console.warn(`Error: ${error}`);
+  }
 }
 
 async function getContactById(contactId) {
-  const db = await readContacts();
-  return db.find((contact) => contact.id === contactId);
+  try {
+    const db = await readContacts();
+    return db.find((contact) => contact.id === contactId);
+  } catch (error) {
+    console.warn(`Error: ${error}`);
+  }
 }
 
 async function removeContact(contactId) {
-  const db = await readContacts();
-  const updateDb = db.filter((contact) => contact.id !== contactId);
-  await writeContact(updateDb);
+  try {
+    const db = await readContacts();
+    const updateDb = db.filter((contact) => contact.id !== contactId);
+    await writeContact(updateDb);
+  } catch (error) {
+    console.warn(`Error: ${error}`);
+  }
 }
 
 async function addContact(name, email, phone) {
-  const db = await readContacts();
-  const id = nanoid();
-  const contact = { id, name, email, phone };
-  db.push(contact);
+  try {
+    const db = await readContacts();
+    const id = nanoid();
+    const contact = { id, name, email, phone };
+    db.push(contact);
 
-  await writeContact(db);
+    await writeContact(db);
+  } catch (error) {
+    console.warn(`Error: ${error}`);
+  }
 }
 
 module.exports = {
